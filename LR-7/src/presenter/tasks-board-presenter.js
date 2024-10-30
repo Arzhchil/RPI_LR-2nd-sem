@@ -98,7 +98,6 @@ export default class TasksBoardPresenter {
         status,
         onTaskDrop: this.#handleTaskDrop.bind(this),
       });
-      console.log(status);
       tasksListComponent.element.setAttribute("data-status", status);
       render(tasksListComponent, this.#tasksBoardComponent.element);
 
@@ -119,8 +118,12 @@ export default class TasksBoardPresenter {
   }
 
   async #handleTaskDrop(taskId, newStatus) {
+    this.#isLoading = true;
+    this.#renderLoader();
     try {
       await this.#tasksModel.updateTaskStatus(taskId, newStatus);
+      this.#isLoading = false;
+      this.#clearLoader();
     } catch (err) {
       console.error("Ошибка при обновлении статуса задачи:", err);
     }
